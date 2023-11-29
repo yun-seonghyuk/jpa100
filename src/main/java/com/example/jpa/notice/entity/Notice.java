@@ -33,6 +33,12 @@ public class Notice {
     private LocalDateTime updateDate;
 
     @Column
+    private LocalDateTime deletedDate;
+
+    @Column
+    private boolean deleted;
+
+    @Column
     private int hits;
 
     @Column

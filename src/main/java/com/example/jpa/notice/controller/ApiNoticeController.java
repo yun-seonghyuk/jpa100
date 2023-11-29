@@ -218,6 +218,17 @@ public class ApiNoticeController {
         Notice notice = noticeRepository.findById(id)
                 .orElseThrow(() -> new NoticeNotFoundException("공지사항의 글이 존재하지 않습니다."));
 
+
         noticeRepository.delete(notice);
+    }
+
+    @DeleteMapping("/notice2/{id}")
+    public void deleteNotice2(@PathVariable Long id){
+        Notice notice = noticeRepository.findById(id)
+                .orElseThrow(() -> new NoticeNotFoundException("공지사항의 글이 존재하지 않습니다."));
+
+        if (notice.isDeleted()){
+            
+        }
     }
 }
