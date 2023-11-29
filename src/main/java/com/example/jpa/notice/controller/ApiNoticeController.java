@@ -1,10 +1,12 @@
 package com.example.jpa.notice.controller;
 
 import com.example.jpa.notice.entity.Notice;
+import com.example.jpa.notice.exception.NoticeNotFoundException;
 import com.example.jpa.notice.model.NoticeInput;
 import com.example.jpa.notice.model.NoticeModel;
 import com.example.jpa.notice.repository.NoticeRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -169,7 +171,7 @@ public class ApiNoticeController {
     public ResponseEntity<Notice> updateNotice(@PathVariable Long id, @RequestBody NoticeInput noticeInput) {
         Optional<Notice> notice = noticeRepository.findById(id);
 
-        if(notice.isPresent()) {
+        if (notice.isPresent()) {
             notice.get().setContents(noticeInput.getTitle());
             notice.get().setContents(noticeInput.getContents());
             notice.get().setUpdateDate(LocalDateTime.now());
@@ -181,4 +183,41 @@ public class ApiNoticeController {
 
     }
 
+    @ExceptionHandler(NoticeNotFoundException.class)
+    public ResponseEntity<String> handlerNoticeNotFoundException(NoticeNotFoundException exception) {
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @PutMapping("/notice1/{id}")
+    public void updateNotice2(@PathVariable Long id, @RequestBody NoticeInput noticeInput) {
+
+        Notice notice = noticeRepository.findById(id)
+                .orElseThrow(() -> new NoticeNotFoundException("공지사항의 글이 존재하지 않습니다."));
+
+        notice.setContents(noticeInput.getTitle());
+        notice.setContents(noticeInput.getContents());
+        notice.setUpdateDate(LocalDateTime.now());
+
+        noticeRepository.save(notice);
+    }
+
+    // 부분 수정
+    @PatchMapping("/notice2/{id}/hits")
+    public void noticeHits(@PathVariable Long id) {
+        Notice notice = noticeRepository.findById(id)
+                .orElseThrow(() -> new NoticeNotFoundException("공지사항의 글이 존재하지 않습니다."));
+
+        notice.setHits(notice.getHits() + 1);
+
+        noticeRepository.save(notice);
+    }
+
+    @DeleteMapping("/notice/{id}")
+    public void deleteNotice(@PathVariable Long id){
+
+        Notice notice = noticeRepository.findById(id)
+                .orElseThrow(() -> new NoticeNotFoundException("공지사항의 글이 존재하지 않습니다."));
+
+        noticeRepository.delete(notice);
+    }
 }
