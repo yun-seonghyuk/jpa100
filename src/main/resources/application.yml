@@ -9,7 +9,7 @@ spring:
     #url: jdbc:h2:file:/Users/parkkyutae/Documents/sources/github/fastcampus-demo-01/record-example/sample1/backofficeDb
     driver-class-name: org.h2.Driver
     username: root
-    password: '1111'
+    password:
 
   jpa:
     hibernate:
@@ -28,11 +28,23 @@ spring:
 
   mustache:
     suffix: .html
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: seonghyuk518@gmail.com
+    password: ccskjofakmafjpxc
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: true
 
 logging:
   level:
     org.hibernate.SQL: trace
     org.hibernate.type: trace
+  file:
+    name: ./logs/spring-jpa.log
 
 
 
